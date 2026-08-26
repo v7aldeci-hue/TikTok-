@@ -4,91 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>محسن جودة فيديوهات تيك توك وإنستغرام</title>
+    <!-- استدعاء محرك معالجة الفيديو -->
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.9.6/dist/ffmpeg.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: #1e1e1e;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
+        body { font-family: Arial, sans-serif; background-color: #121212; color: white; text-align: center; padding: 20px; }
+        .container { max-width: 400px; margin: 0 auto; background-color: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         h1 { font-size: 24px; color: #00e5ff; }
         p { font-size: 14px; color: #aaaaaa; }
-        
-        /* تصميم زر المتابعة */
-        .follow-btn {
-            background-color: #e1306c; /* لون انستغرام */
-            color: white;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-        }
-        
-        /* تصميم زر رفع الفيديو */
-        .upload-btn {
-            background-color: #00e5ff;
-            color: black;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-            display: inline-block;
-        }
+        .follow-btn { background-color: #e1306c; color: white; padding: 15px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; }
+        .upload-btn { background-color: #00e5ff; color: black; padding: 15px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; display: inline-block; }
+        .download-btn { background-color: #32cd32; color: white; padding: 15px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; display: inline-block; text-decoration: none; }
         input[type="file"] { display: none; }
+        #statusMessage { margin-top: 20px; color: #ffeb3b; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <!-- الشاشة الأولى: القفل وزر المتابعة -->
+    <!-- شاشة القفل -->
     <div id="lockScreen" class="container">
         <h1>الموقع مقفول 🔒</h1>
-        <p>حتى تستخدم أداة تحسين الفيديوهات مجاناً، لازم تتابع حسابي على انستغرام أولاً.</p>
-        <button onclick="unlockSite()" class="follow-btn">
-            📸 اضغط هنا لمتابعتي وفتح الموقع
-        </button>
+        <p>حتى تستخدم أداة تحسين الفيديوهات، لازم تتابع حسابي على انستغرام.</p>
+        <button onclick="unlockSite()" class="follow-btn">📸 اضغط هنا لمتابعتي وفتح الموقع</button>
     </div>
 
-    <!-- الشاشة الثانية: الموقع بعد الفتح (مخفية بالبداية) -->
+    <!-- واجهة الموقع الأساسية -->
     <div id="mainApp" class="container" style="display: none;">
         <h1>محسن جودة الفيديوهات 🚀</h1>
-        <p>تم فتح الموقع! ارفع الفيديو هسه، وراح نجهزه بأفضل دقة (60 إطار/ثانية) حتى ما تقل جودته بالنشر.</p>
+        <p>ارفع الفيديو هسه، وراح نرفع الفريمات إلى 60 ونضبط الجودة لمنصات التواصل.</p>
         
-        <label for="videoUpload" class="upload-btn">
-            📂 اختار الفيديو من تليفونك
-        </label>
+        <label for="videoUpload" class="upload-btn">📂 اختار الفيديو من تليفونك</label>
         <input type="file" id="videoUpload" accept="video/mp4,video/x-m4v,video/*">
         
-        <p id="statusMessage" style="margin-top: 20px; display: none;">جاري تجهيز الفيديو...</p>
+        <p id="statusMessage" style="display: none;">جاري التحضير...</p>
+        <div id="downloadArea"></div>
     </div>
 
     <script>
+        // فتح الموقع بعد متابعة الانستغرام
         function unlockSite() {
-            // هنا يروح لحسابك، بس غير كلمة o8.ne واكتب يوزرك
-            window.open("https://instagram.com/YOUR_USERNAME", "_blank");
-            
-            // بعد 3 ثواني يختفي القفل ويظهر الموقع
+            window.open("https://instagram.com/o8.ne", "_blank");
             setTimeout(() => {
                 document.getElementById("lockScreen").style.display = "none";
                 document.getElementById("mainApp").style.display = "block";
             }, 3000);
         }
+
+        // إعداد محرك الفيديو
+        const { createFFmpeg, fetchFile } = FFmpeg;
+        const ffmpeg = createFFmpeg({ log: true });
+
+        document.getElementById('videoUpload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const status = document.getElementById('statusMessage');
+            const downloadArea = document.getElementById('downloadArea');
+            status.style.display = 'block';
+            downloadArea.innerHTML = ''; // مسح زر التحميل القديم إذا موجود
+
+            try {
+                status.innerText = '⏳ جاري تشغيل محرك المعالجة (ممكن ياخذ ثواني)...';
+                if (!ffmpeg.isLoaded()) await ffmpeg.load();
+
+                status.innerText = '⚙️ جاري تحسين جودة الفيديو ورفع الفريمات... (لا تسد الصفحة)';
+                ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(file));
+
+                // الكود السري لرفع الفريمات لـ 60 وضبط البت ريت
+                await ffmpeg.run('-i', 'input.mp4', '-r', '60', '-b:v', '5M', '-preset', 'ultrafast', 'output.mp4');
+
+                const data = ffmpeg.FS('readFile', 'output.mp4');
+                const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
+                const videoUrl = URL.createObjectURL(videoBlob);
+
+                status.style.display = 'none';
+                downloadArea.innerHTML = `<a href="${videoUrl}" download="Optimized_Video.mp4" class="download-btn">✅ كملنا! اضغط هنا لتحميل الفيديو</a>`;
+
+            } catch (error) {
+                status.innerText = '❌ صار خطأ بالمعالجة، جرب فيديو أقصر.';
+                console.error(error);
+            }
+        });
     </script>
 
 </body>
