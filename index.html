@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محسن جودة فيديوهات تيك توك وإنستغرام</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        h1 { font-size: 24px; color: #00e5ff; }
+        p { font-size: 14px; color: #aaaaaa; }
+        
+        /* تصميم زر المتابعة */
+        .follow-btn {
+            background-color: #e1306c; /* لون انستغرام */
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        /* تصميم زر رفع الفيديو */
+        .upload-btn {
+            background-color: #00e5ff;
+            color: black;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            display: inline-block;
+        }
+        input[type="file"] { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- الشاشة الأولى: القفل وزر المتابعة -->
+    <div id="lockScreen" class="container">
+        <h1>الموقع مقفول 🔒</h1>
+        <p>حتى تستخدم أداة تحسين الفيديوهات مجاناً، لازم تتابع حسابي على انستغرام أولاً.</p>
+        <button onclick="unlockSite()" class="follow-btn">
+            📸 اضغط هنا لمتابعتي وفتح الموقع
+        </button>
+    </div>
+
+    <!-- الشاشة الثانية: الموقع بعد الفتح (مخفية بالبداية) -->
+    <div id="mainApp" class="container" style="display: none;">
+        <h1>محسن جودة الفيديوهات 🚀</h1>
+        <p>تم فتح الموقع! ارفع الفيديو هسه، وراح نجهزه بأفضل دقة (60 إطار/ثانية) حتى ما تقل جودته بالنشر.</p>
+        
+        <label for="videoUpload" class="upload-btn">
+            📂 اختار الفيديو من تليفونك
+        </label>
+        <input type="file" id="videoUpload" accept="video/mp4,video/x-m4v,video/*">
+        
+        <p id="statusMessage" style="margin-top: 20px; display: none;">جاري تجهيز الفيديو...</p>
+    </div>
+
+    <script>
+        function unlockSite() {
+            // هنا يروح لحسابك، بس غير كلمة o8.ne واكتب يوزرك
+            window.open("https://instagram.com/YOUR_USERNAME", "_blank");
+            
+            // بعد 3 ثواني يختفي القفل ويظهر الموقع
+            setTimeout(() => {
+                document.getElementById("lockScreen").style.display = "none";
+                document.getElementById("mainApp").style.display = "block";
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>
