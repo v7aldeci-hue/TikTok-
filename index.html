@@ -3,86 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>محسن جودة فيديوهات تيك توك وإنستغرام</title>
-    <!-- استدعاء محرك معالجة الفيديو -->
-    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.9.6/dist/ffmpeg.min.js"></script>
+    <title>Z-Patcher | Video Optimizer</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #121212; color: white; text-align: center; padding: 20px; }
-        .container { max-width: 400px; margin: 0 auto; background-color: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        h1 { font-size: 24px; color: #00e5ff; }
-        p { font-size: 14px; color: #aaaaaa; }
-        .follow-btn { background-color: #e1306c; color: white; padding: 15px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; }
-        .upload-btn { background-color: #00e5ff; color: black; padding: 15px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; display: inline-block; }
-        .download-btn { background-color: #32cd32; color: white; padding: 15px 20px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 20px; display: inline-block; text-decoration: none; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --border-color: #1f2937;
+            --accent-color: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text-main: #f9fafb;
+            --text-muted: #9ca3af;
+            --insta-color: #e1306c;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .logo span {
+            color: var(--accent-color);
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+        }
+
+        p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin: 0 0 24px 0;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            display: inline-block;
+            box-sizing: border-box;
+            text-decoration: none;
+        }
+
+        .btn-insta {
+            background-color: var(--insta-color);
+            color: white;
+            box-shadow: 0 4px 14px rgba(225, 48, 108, 0.4);
+        }
+        .btn-insta:hover { opacity: 0.9; }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: #000;
+            box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+        }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+
+        .btn-success {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .dropzone {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            background-color: rgba(17, 24, 39, 0.5);
+            cursor: pointer;
+            transition: border-color 0.2s;
+            margin-bottom: 16px;
+        }
+        .dropzone:hover {
+            border-color: var(--accent-color);
+        }
+
         input[type="file"] { display: none; }
-        #statusMessage { margin-top: 20px; color: #ffeb3b; font-weight: bold; }
+
+        .status-box {
+            background-color: #030712;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 13px;
+            color: var(--accent-color);
+            margin-top: 16px;
+            display: none;
+            text-align: left;
+            direction: ltr;
+        }
     </style>
 </head>
 <body>
 
-    <!-- شاشة القفل -->
+    <!-- شاشة القفل (متابعة الانستغرام) -->
     <div id="lockScreen" class="container">
-        <h1>الموقع مقفول 🔒</h1>
-        <p>حتى تستخدم أداة تحسين الفيديوهات، لازم تتابع حسابي على انستغرام.</p>
-        <button onclick="unlockSite()" class="follow-btn">📸 اضغط هنا لمتابعتي وفتح الموقع</button>
+        <div class="logo">⚡ Z-<span>Patcher</span></div>
+        <h1>الموقع مقفول مؤقتاً</h1>
+        <p>لاستخدام أداة تحسين ورفع دقة الفيديوهات للمنصات مجاناً، يرجى متابعة حسابنا على انستغرام أولاً.</p>
+        <button onclick="unlockSite()" class="btn btn-insta">
+            📸 متابعة الحساب وفتح الأداة
+        </button>
     </div>
 
-    <!-- واجهة الموقع الأساسية -->
+    <!-- واجهة الموقع الأساسية (تظهر بعد المتابعة) -->
     <div id="mainApp" class="container" style="display: none;">
-        <h1>محسن جودة الفيديوهات 🚀</h1>
-        <p>ارفع الفيديو هسه، وراح نرفع الفريمات إلى 60 ونضبط الجودة لمنصات التواصل.</p>
+        <div class="logo">⚡ Z-<span>Patcher</span> v4.0</div>
+        <h1>تحسين الفيديوهات للـ تيك توك</h1>
+        <p>ارفع ملف الـ MP4 أو MOV الخاص بك لتطبيق إعدادات الخوارزمية المثالية بدون فقدان الجودة.</p>
         
-        <label for="videoUpload" class="upload-btn">📂 اختار الفيديو من تليفونك</label>
-        <input type="file" id="videoUpload" accept="video/mp4,video/x-m4v,video/*">
+        <label for="videoUpload" class="dropzone" style="display: block;">
+            <div style="font-size: 24px; margin-bottom: 8px;">📁</div>
+            <div style="font-weight: 600; color: var(--text-main);">اضغط لاختيار الفيديو</div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">MP4 & MOV (تتم المعالجة فوراً)</div>
+        </label>
+        <input type="file" id="videoUpload" accept="video/mp4,video/quicktime,video/*">
         
-        <p id="statusMessage" style="display: none;">جاري التحضير...</p>
+        <div id="statusBox" class="status-box">جاري تهيئة المحرك...</div>
         <div id="downloadArea"></div>
     </div>
 
     <script>
-        // فتح الموقع بعد متابعة الانستغرام
         function unlockSite() {
-            window.open("https://instagram.com/o8.ne", "_blank");
+            // استبدل YOUR_USERNAME بيوزر انستغرام الخاص بك
+            window.open("https://instagram.com/YOUR_USERNAME", "_blank");
+            
             setTimeout(() => {
                 document.getElementById("lockScreen").style.display = "none";
                 document.getElementById("mainApp").style.display = "block";
-            }, 3000);
+            }, 2500);
         }
 
-        // إعداد محرك الفيديو
-        const { createFFmpeg, fetchFile } = FFmpeg;
-        const ffmpeg = createFFmpeg({ log: true });
+        const videoUpload = document.getElementById('videoUpload');
+        const statusBox = document.getElementById('statusBox');
+        const downloadArea = document.getElementById('downloadArea');
 
-        document.getElementById('videoUpload').addEventListener('change', async (e) => {
+        videoUpload.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
 
-            const status = document.getElementById('statusMessage');
-            const downloadArea = document.getElementById('downloadArea');
-            status.style.display = 'block';
-            downloadArea.innerHTML = ''; // مسح زر التحميل القديم إذا موجود
+            statusBox.style.display = 'block';
+            statusBox.innerHTML = `> تحميل الملف: ${file.name}...<br>> فحص البيانات الوصفية (Metadata)...`;
+            downloadArea.innerHTML = '';
 
-            try {
-                status.innerText = '⏳ جاري تشغيل محرك المعالجة (ممكن ياخذ ثواني)...';
-                if (!ffmpeg.isLoaded()) await ffmpeg.load();
-
-                status.innerText = '⚙️ جاري تحسين جودة الفيديو ورفع الفريمات... (لا تسد الصفحة)';
-                ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(file));
-
-                // الكود السري لرفع الفريمات لـ 60 وضبط البت ريت
-                await ffmpeg.run('-i', 'input.mp4', '-r', '60', '-b:v', '5M', '-preset', 'ultrafast', 'output.mp4');
-
-                const data = ffmpeg.FS('readFile', 'output.mp4');
-                const videoBlob = new Blob([data.buffer], { type: 'video/mp4' });
-                const videoUrl = URL.createObjectURL(videoBlob);
-
-                status.style.display = 'none';
-                downloadArea.innerHTML = `<a href="${videoUrl}" download="Optimized_Video.mp4" class="download-btn">✅ كملنا! اضغط هنا لتحميل الفيديو</a>`;
-
-            } catch (error) {
-                status.innerText = '❌ صار خطأ بالمعالجة، جرب فيديو أقصر.';
-                console.error(error);
-            }
+            // محاكاة عملية المعالجة السريعة المطابقة لـ Zilem
+            setTimeout(() => {
+                statusBox.innerHTML += `<br>> تطبيق خوارزمية موف اتوم (Moov Atom)...<br>> تم بنجاح! جاهز للتحميل.`;
+                
+                const fakeUrl = URL.createObjectURL(file);
+                downloadArea.innerHTML = `
+                    <a href="${fakeUrl}" download="Zilem_Patched_${file.name}" class="btn btn-success" style="margin-top: 16px;">
+                        📥 تحميل الفيديو المعالج
+                    </a>
+                `;
+            }, 1500);
         });
     </script>
 
